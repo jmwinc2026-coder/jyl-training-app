@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JYL Medical Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A;
+    --surface: #141414;
+    --card: #1C1C1C;
+    --card2: #222222;
+    --gold: #C9A84C;
+    --gold-light: #E8C46A;
+    --gold-dark: #8B6914;
+    --gold-border: rgba(201,168,76,0.25);
+    --gold-border-strong: rgba(201,168,76,0.6);
+    --white: #FFFFFF;
+    --muted: #888888;
+    --success: #4CAF7D;
+    --error: #E05252;
+    --text-secondary: #CCCCCC;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:flex; flex-direction:column; }
+
+  /* NAV */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--gold-border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 58px;
+    position: sticky; top:0; z-index:100;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+  .nav-logo span { color: var(--white); font-size:13px; font-family:'Montserrat',sans-serif; font-weight:400; display:block; margin-top:-2px; }
+  .nav-user {
+    display:flex; align-items:center; gap:10px;
+  }
+  .avatar {
+    width:34px; height:34px; border-radius:50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; color:#000;
+  }
+  .back-btn {
+    background:none; border:none; color:var(--gold); cursor:pointer;
+    font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600;
+    display:flex; align-items:center; gap:6px; padding:6px 0;
+  }
+  .back-btn:hover { color:var(--gold-light); }
+
+  /* BUTTONS */
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+  .btn-gold:hover { opacity:0.9; }
+  .btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-border-strong);
+    border-radius: 8px;
+    padding: 11px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.08); }
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 6px;
+    width:auto;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .card-accent {
+    border-left: 3px solid var(--gold);
+    border-top: none; border-right:none; border-bottom:none;
+    border-radius: 0;
+    background: var(--card);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* BADGES */
+  .badge {
+    display:inline-block; padding:3px 10px; border-radius:20px;
+    font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
+  }
+  .badge-quiz { background:rgba(56,136,220,0.18); color:#5AABF0; }
+  .badge-flash { background:rgba(78,175,125,0.18); color:#4CAF7D; }
+  .badge-walk { background:rgba(201,168,76,0.18); color:var(--gold); }
+  .badge-scenario { background:rgba(180,90,200,0.18); color:#C47FDD; }
+
+  /* PROGRESS BAR */
+  .progress-track {
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    height: 5px;
+    overflow:hidden;
+  }
+  .progress-fill {
+    height:100%; border-radius:4px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+    transition: width 0.6s ease;
+  }
+
+  /* LOGIN SCREEN */
+  #login {
+    justify-content: center; align-items: center;
+    background: var(--black);
+    padding: 24px;
+  }
+  .login-box {
+    width:100%; max-width:400px;
+    display:flex; flex-direction:column; gap:20px;
+  }
+  .login-header { text-align:center; }
+  .brand-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; color:var(--gold);
+    line-height:1;
+  }
+  .brand-tagline {
+    font-size:12px; color:var(--muted);
+    letter-spacing:2px; text-transform:uppercase;
+    margin-top:6px;
+  }
+  .login-divider {
+    height:1px;
+    background: linear-gradient(90deg, transparent, var(--gold-border-strong), transparent);
+  }
+  .field-label { font-size:11px; font-weight:600; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+  .field-input {
+    width:100%; background:var(--card); border:1px solid var(--gold-border);
+    border-radius:8px; padding:12px 14px; color:var(--white);
+    font-family:'Montserrat',sans-serif; font-size:14px;
+    outline:none; transition: border-color 0.2s;
+  }
+  .field-input:focus { border-color: var(--gold); }
+  .role-toggle {
+    display:flex; background:var(--card); border-radius:8px;
+    border:1px solid var(--gold-border); overflow:hidden;
+  }
+  .role-btn {
+    flex:1; padding:10px; background:none; border:none;
+    color:var(--muted); font-family:'Montserrat',sans-serif;
+    font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;
+  }
+  .role-btn.active { background:var(--gold); color:#000; }
+
+  /* STUDENT DASHBOARD */
+  .page-content { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
+  .hero-card {
+    background: var(--card);
+    border: 1px solid var(--gold-border);
+    border-radius:12px; padding:20px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .hero-avatar {
+    width:52px; height:52px; border-radius:50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; font-weight:700; color:#000; flex-shrink:0;
+  }
+  .hero-name {
+    font-family:'Playfair Display',serif;
+    font-size:20px; color:var(--white);
+  }
+  .hero-sub { font-size:12px; color:var(--gold); margin-top:2px; font-weight:500; }
+  .section-label {
+    font-size:11px; font-weight:700; color:var(--gold);
+    letter-spacing:1.5px; text-transform:uppercase;
+  }
+  .module-row {
+    background:var(--card); border:1px solid var(--gold-border);
+    border-radius:10px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+    cursor:pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .module-row:hover { border-color:var(--gold-border-strong); background:var(--card2); }
+  .module-icon {
+    width:40px; height:40px; border-radius:8px;
+    background:rgba(201,168,76,0.1); border:1px solid var(--gold-border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; flex-shrink:0;
+  }
+  .module-info { flex:1; min-width:0; }
+  .module-title { font-size:14px; font-weight:600; color:var(--white); }
+  .module-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+  .module-progress-wrap { margin-top:8px; }
+  .chevron { color:var(--gold); font-size:16px; flex-shrink:0; }
+
+  /* TABS */
+  .tabs { display:flex; border-bottom:1px solid var(--gold-border); }
+  .tab-btn {
+    flex:1; background:none; border:none; color:var(--muted);
+    font-family:'Montserrat',sans-serif; font-size:13px; font-weight:600;
+    padding:14px 0; cursor:pointer; position:relative;
+    transition: color 0.2s;
+  }
+  .tab-btn.active { color:var(--gold); }
+  .tab-btn.active::after {
+    content:''; position:absolute; bottom:-1px; left:20%; right:20%;
+    height:2px; background:var(--gold); border-radius:2px;
+  }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:flex; flex-direction:column; gap:12px; }
+
+  /* FLASHCARD */
+  .flashcard-wrap {
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:24px; gap:20px;
+  }
+  .flashcard {
+    width:100%; max-width:480px;
+    background:var(--card); border:1px solid var(--gold-border-strong);
+    border-radius:16px; min-height:260px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:32px 28px; text-align:center;
+    cursor:pointer; transition: transform 0.15s;
+    position:relative; overflow:hidden;
+  }
+  .flashcard:hover { transform:scale(1.01); }
+  .flashcard::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  }
+  .card-side-label {
+    font-size:10px; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; color:var(--gold); margin-bottom:16px;
+  }
+  .card-text {
+    font-size:18px; font-weight:600; line-height:1.5; color:var(--white);
+  }
+  .card-subtext {
+    font-size:13px; color:var(--text-secondary); margin-top:10px; line-height:1.6;
+  }
+  .card-counter {
+    font-size:12px; color:var(--muted); font-weight:600;
+  }
+  .flip-hint {
+    font-size:11px; color:var(--muted); display:flex; align-items:center; gap:4px;
+  }
+  .fc-controls { display:flex; gap:10px; width:100%; max-width:480px; }
+
+  /* QUIZ */
+  .quiz-wrap { flex:1; display:flex; flex-direction:column; padding:20px; gap:16px; }
+  .question-text {
+    font-size:16px; font-weight:600; line-height:1.5; color:var(--white);
+  }
+  .option-btn {
+    background:var(--card); border:1px solid var(--gold-border);
+    border-radius:10px; padding:14px 16px;
+    color:var(--white); font-family:'Montserrat',sans-serif;
+    font-size:14px; font-weight:500; cursor:pointer;
+    text-align:left; width:100%; display:flex; align-items:center; gap:12px;
+    transition: all 0.2s;
+  }
+  .option-btn:hover:not(:disabled) { border-color:var(--gold); background:var(--card2); }
+  .option-btn.correct { border-color:var(--success); background:rgba(76,175,125,0.12); color:var(--success); }
+  .option-btn.wrong { border-color:var(--error); background:rgba(224,82,82,0.12); color:var(--error); }
+  .option-btn:disabled { cursor:default; }
+  .option-letter {
+    width:26px; height:26px; border-radius:50%;
+    background:rgba(255,255,255,0.06); display:flex;
+    align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; flex-shrink:0;
+  }
+  .explanation-box {
+    background:var(--card2); border-left:3px solid var(--gold);
+    border-radius:0 8px 8px 0; padding:14px 16px;
+    font-size:13px; color:var(--text-secondary); line-height:1.6;
+    display:none;
+  }
+  .score-pill {
+    background:rgba(201,168,76,0.12); border:1px solid var(--gold-border-strong);
+    border-radius:20px; padding:5px 14px;
+    font-size:13px; font-weight:700; color:var(--gold);
+  }
+
+  /* WALKTHROUGH */
+  .walk-wrap { flex:1; display:flex; flex-direction:column; padding:20px; gap:16px; }
+  .step-card {
+    background:var(--card); border:1px solid var(--gold-border);
+    border-radius:12px; overflow:hidden;
+  }
+  .step-header {
+    background:rgba(201,168,76,0.08); border-bottom:1px solid var(--gold-border);
+    padding:14px 18px; display:flex; align-items:center; gap:12px;
+  }
+  .step-num {
+    width:32px; height:32px; border-radius:50%;
+    background:var(--gold); color:#000;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:13px; flex-shrink:0;
+  }
+  .step-title { font-size:15px; font-weight:600; color:var(--white); }
+  .step-body { padding:16px 18px; font-size:14px; color:var(--text-secondary); line-height:1.7; }
+  .step-img {
+    width:100%; height:160px; object-fit:cover;
+    background:var(--card2); border-top:1px solid var(--gold-border);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:13px;
+  }
+
+  /* SCENARIO */
+  .scenario-wrap { flex:1; display:flex; flex-direction:column; padding:20px; gap:16px; }
+  .patient-card {
+    background:var(--card2); border:1px solid var(--gold-border);
+    border-radius:12px; padding:16px;
+    display:flex; gap:14px; align-items:flex-start;
+  }
+  .patient-icon {
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(201,168,76,0.12); border:1px solid var(--gold-border-strong);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0;
+  }
+  .patient-name { font-size:15px; font-weight:700; color:var(--white); }
+  .patient-detail { font-size:12px; color:var(--muted); margin-top:2px; }
+  .situation-box {
+    background:var(--card); border:1px solid var(--gold-border);
+    border-radius:10px; padding:16px;
+    font-size:14px; color:var(--text-secondary); line-height:1.7;
+  }
+  .outcome-box {
+    border-radius:10px; padding:14px 16px;
+    font-size:14px; line-height:1.6; display:none;
+  }
+  .outcome-box.correct { background:rgba(76,175,125,0.12); border:1px solid rgba(76,175,125,0.4); color:var(--success); }
+  .outcome-box.wrong { background:rgba(224,82,82,0.1); border:1px solid rgba(224,82,82,0.3); color:#F08080; }
+
+  /* INSTRUCTOR */
+  .student-row {
+    background:var(--card); border:1px solid var(--gold-border);
+    border-radius:10px; padding:14px 16px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .student-avatar {
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:#000; flex-shrink:0;
+  }
+  .stat-row { display:flex; gap:10px; }
+  .stat-box {
+    flex:1; background:var(--card); border:1px solid var(--gold-border);
+    border-radius:10px; padding:14px; text-align:center;
+  }
+  .stat-num { font-size:24px; font-weight:700; color:var(--gold); font-family:'Playfair Display',serif; }
+  .stat-label { font-size:11px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:1px; }
+
+  /* COMPLETION */
+  #completion { justify-content:center; align-items:center; padding:32px 24px; text-align:center; }
+  .complete-icon {
+    width:80px; height:80px; border-radius:50%;
+    background:rgba(76,175,125,0.12); border:2px solid var(--success);
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px; margin:0 auto 20px;
+  }
+  .complete-title {
+    font-family:'Playfair Display',serif;
+    font-size:28px; color:var(--gold); margin-bottom:8px;
+  }
+  .complete-sub { font-size:14px; color:var(--muted); margin-bottom:28px; }
+
+  .fab {
+    position:fixed; bottom:24px; right:24px;
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+    border:none; color:#000; font-size:24px; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 20px rgba(201,168,76,0.3);
+  }
+
+  .crown { font-size:14px; color:var(--gold); }
+  .module-complete-badge {
+    font-size:10px; color:var(--success); font-weight:700;
+    display:flex; align-items:center; gap:3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login" class="screen active">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="brand-logo">JYL ☘</div>
+      <div style="font-family:'Playfair Display',serif;font-size:13px;color:var(--muted);font-style:italic;margin-top:4px;">Medical Services LLC</div>
+      <div class="brand-tagline">Quality Care. Trusted Luck.</div>
+    </div>
+    <div class="login-divider"></div>
+    <div>
+      <div class="field-label">I am a</div>
+      <div class="role-toggle">
+        <button class="role-btn active" onclick="setRole('student',this)">Student</button>
+        <button class="role-btn" onclick="setRole('instructor',this)">Instructor</button>
+      </div>
+    </div>
+    <div>
+      <div class="field-label">Email</div>
+      <input class="field-input" type="email" placeholder="you@email.com" id="login-email">
+    </div>
+    <div>
+      <div class="field-label">Password</div>
+      <input class="field-input" type="password" placeholder="••••••••" id="login-pw">
+    </div>
+    <button class="btn-gold" onclick="doLogin()">Sign In</button>
+    <div style="text-align:center;">
+      <span style="font-size:12px;color:var(--muted);">New student? </span>
+      <span style="font-size:12px;color:var(--gold);cursor:pointer;font-weight:600;">Register here</span>
+    </div>
+    <div style="text-align:center;margin-top:8px;">
+      <span style="font-size:10px;color:var(--muted);font-style:italic;">Demo: student@jyl.com / instructor@jyl.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STUDENT DASHBOARD ============ -->
+<div id="student-dash" class="screen">
+  <div class="nav">
+    <div class="nav-logo">JYL ☘ <span>Training Portal</span></div>
+    <div class="nav-user">
+      <span style="font-size:12px;color:var(--muted);">Student</span>
+      <div class="avatar">KJ</div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="hero-card">
+      <div class="hero-avatar">KJ</div>
+      <div>
+        <div class="hero-name">Kendra Johnson</div>
+        <div class="hero-sub">☘ Phlebotomy Technician Course</div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <span class="badge badge-walk">3 of 5 Complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">87%</div>
+        <div class="stat-label">Avg Score</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Modules Done</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Remaining</div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:4px;">My Modules</div>
+
+    <div class="module-row" onclick="showScreen('flashcard')">
+      <div class="module-icon">🩸</div>
+      <div class="module-info">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="module-title">Venipuncture Vocabulary</div>
+          <span class="badge badge-flash">Flashcards</span>
+        </div>
+        <div class="module-meta">12 cards · Assigned by Ms. Williams</div>
+        <div class="module-progress-wrap">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:10px;color:var(--muted);">Progress</span>
+            <span style="font-size:10px;color:var(--gold);">60%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+
+    <div class="module-row" onclick="showScreen('quiz')">
+      <div class="module-icon">📋</div>
+      <div class="module-info">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="module-title">Blood Collection Quiz</div>
+          <span class="badge badge-quiz">Quiz</span>
+        </div>
+        <div class="module-meta">10 questions · Certification Prep</div>
+        <div class="module-progress-wrap">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:10px;color:var(--muted);">Progress</span>
+            <span style="font-size:10px;color:var(--success);">100% ✓</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+
+    <div class="module-row" onclick="showScreen('walkthrough')">
+      <div class="module-icon">🧤</div>
+      <div class="module-info">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="module-title">Standard Draw Procedure</div>
+          <span class="badge badge-walk">Walkthrough</span>
+        </div>
+        <div class="module-meta">7 steps · Core Technique</div>
+        <div class="module-progress-wrap">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:10px;color:var(--muted);">Progress</span>
+            <span style="font-size:10px;color:var(--gold);">43%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:43%"></div></div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+
+    <div class="module-row" onclick="showScreen('scenario')">
+      <div class="module-icon">🏥</div>
+      <div class="module-info">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="module-title">Difficult Stick Scenarios</div>
+          <span class="badge badge-scenario">Scenario</span>
+        </div>
+        <div class="module-meta">4 cases · Patient Simulation</div>
+        <div class="module-progress-wrap">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:10px;color:var(--muted);">Progress</span>
+            <span style="font-size:10px;color:var(--muted);">Not started</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+
+    <div style="margin-top:8px;padding-bottom:24px;">
+      <button class="btn-outline" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FLASHCARD PLAYER ============ -->
+<div id="flashcard" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="showScreen('student-dash')">‹ Dashboard</button>
+    <div style="font-size:13px;font-weight:600;color:var(--gold)">Venipuncture Vocabulary</div>
+    <span class="score-pill" id="fc-counter">1 / 7</span>
+  </div>
+  <div style="padding:12px 20px 0;">
+    <div class="progress-track"><div class="progress-fill" id="fc-progress" style="width:14%"></div></div>
+  </div>
+  <div class="flashcard-wrap">
+    <div class="card-counter" id="fc-num">Card 1 of 7</div>
+    <div class="flashcard" onclick="flipCard()" id="flashcard-card">
+      <div class="card-side-label" id="fc-side">FRONT — TAP TO FLIP</div>
+      <div class="card-text" id="fc-text">Antecubital Fossa</div>
+      <div class="card-subtext" id="fc-sub"></div>
+    </div>
+    <div class="flip-hint" id="flip-hint">👆 Tap card to flip</div>
+    <div class="fc-controls">
+      <button class="btn-outline btn-sm" style="flex:1" onclick="fcPrev()">‹ Prev</button>
+      <button class="btn-gold btn-sm" style="flex:1" onclick="fcNext()">Next ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ QUIZ PLAYER ============ -->
+<div id="quiz" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="showScreen('student-dash')">‹ Dashboard</button>
+    <div style="font-size:13px;font-weight:600;color:var(--gold)">Blood Collection Quiz</div>
+    <span class="score-pill" id="quiz-score-display">Score: 0</span>
+  </div>
+  <div style="padding:12px 20px 0;">
+    <div class="progress-track"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+  </div>
+  <div class="quiz-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="section-label" id="quiz-num">Question 1 of 5</span>
+    </div>
+    <div class="card">
+      <div class="question-text" id="quiz-question">Which vein is most commonly used for venipuncture?</div>
+    </div>
+    <div id="quiz-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div class="explanation-box" id="quiz-explanation"></div>
+    <button class="btn-gold" id="quiz-next-btn" onclick="nextQuestion()" style="display:none">Next Question ›</button>
+  </div>
+</div>
+
+<!-- ============ WALKTHROUGH ============ -->
+<div id="walkthrough" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="showScreen('student-dash')">‹ Dashboard</button>
+    <div style="font-size:13px;font-weight:600;color:var(--gold)">Standard Draw Procedure</div>
+    <span class="score-pill" id="walk-counter">Step 1/7</span>
+  </div>
+  <div style="padding:12px 20px 0;">
+    <div class="progress-track"><div class="progress-fill" id="walk-progress" style="width:14%"></div></div>
+  </div>
+  <div class="walk-wrap">
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num" id="walk-num">1</div>
+        <div class="step-title" id="walk-title">Verify Patient Identity</div>
+      </div>
+      <div class="step-body" id="walk-body">
+        Ask the patient to state their full name and date of birth. Cross-reference against the requisition order. Never rely solely on room number or wristband without verbal confirmation. Identity errors are one of the most common — and most preventable — mistakes in phlebotomy.
+      </div>
+      <div class="step-img">📷 Procedure image uploads here</div>
+    </div>
+    <div class="card" style="background:rgba(201,168,76,0.04);">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">☘ Pro Tip</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;" id="walk-tip">Always use two patient identifiers per Joint Commission standards — name AND date of birth are the gold standard pair.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:auto;">
+      <button class="btn-outline btn-sm" style="flex:1" onclick="walkPrev()">‹ Back</button>
+      <button class="btn-gold btn-sm" style="flex:1" onclick="walkNext()">Next Step ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCENARIO ============ -->
+<div id="scenario" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="showScreen('student-dash')">‹ Dashboard</button>
+    <div style="font-size:13px;font-weight:600;color:var(--gold)">Difficult Stick Scenarios</div>
+    <span class="score-pill">Case 1/4</span>
+  </div>
+  <div class="scenario-wrap">
+    <div class="patient-card">
+      <div class="patient-icon">👩</div>
+      <div>
+        <div class="patient-name">Margaret T., 68 F</div>
+        <div class="patient-detail">Chief Complaint: Routine labs · History: Chronic dialysis patient · BP 142/88</div>
+        <div style="margin-top:8px;display:flex;gap:6px;">
+          <span class="badge badge-scenario">Difficult Access</span>
+          <span class="badge" style="background:rgba(224,82,82,0.12);color:#F08080;">High Risk</span>
+        </div>
+      </div>
+    </div>
+    <div class="situation-box">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">SITUATION</div>
+      You've been asked to collect a CBC and CMP on Margaret, a long-term dialysis patient. On inspection, her antecubital veins are scarred and rolling. She's anxious and has had multiple failed sticks today. Her right arm has an AV fistula.
+    </div>
+    <div class="section-label">What do you do first?</div>
+    <div id="scenario-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div class="outcome-box" id="scenario-outcome"></div>
+    <button class="btn-gold" id="scenario-next" style="display:none;margin-top:auto;" onclick="showScreen('completion')">Next Case ›</button>
+  </div>
+</div>
+
+<!-- ============ INSTRUCTOR DASHBOARD ============ -->
+<div id="instructor-dash" class="screen">
+  <div class="nav">
+    <div class="nav-logo">JYL ☘ <span>Instructor Portal</span></div>
+    <div class="nav-user">
+      <span style="font-size:12px;color:var(--gold);">Lead Instructor</span>
+      <div class="avatar" style="background:linear-gradient(135deg,#8B6914,#C9A84C);">TW</div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="hero-card">
+      <div class="hero-avatar" style="background:linear-gradient(135deg,#8B6914,#C9A84C);">TW</div>
+      <div>
+        <div style="font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:700;">Lead Instructor</div>
+        <div class="hero-name">Tanisha Williams</div>
+        <div class="hero-sub">☘ Phlebotomy Technician Program</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Students</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Modules</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">78%</div>
+        <div class="stat-label">Avg Score</div>
+      </div>
+    </div>
+
+    <div class="tabs" id="inst-tabs">
+      <button class="tab-btn active" onclick="switchTab('modules')">My Modules</button>
+      <button class="tab-btn" onclick="switchTab('students')">Student Progress</button>
+    </div>
+
+    <div id="tab-modules" class="tab-panel active">
+      <div class="module-row">
+        <div class="module-icon">🩸</div>
+        <div class="module-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <div class="module-title">Venipuncture Vocabulary</div>
+            <span class="badge badge-flash">Flashcards</span>
+          </div>
+          <div class="module-meta">12 cards · 12 students assigned</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);">Avg completion: 71%</div>
+        </div>
+        <button class="btn-outline btn-sm">Edit</button>
+      </div>
+      <div class="module-row">
+        <div class="module-icon">📋</div>
+        <div class="module-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <div class="module-title">Blood Collection Quiz</div>
+            <span class="badge badge-quiz">Quiz</span>
+          </div>
+          <div class="module-meta">10 questions · 12 students assigned</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);">Avg score: 84%</div>
+        </div>
+        <button class="btn-outline btn-sm">Edit</button>
+      </div>
+      <div class="module-row">
+        <div class="module-icon">🧤</div>
+        <div class="module-info">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <div class="module-title">Standard Draw Procedure</div>
+            <span class="badge badge-walk">Walkthrough</span>
+          </div>
+          <div class="module-meta">7 steps · 8 students assigned</div>
+          <div style="margin-top:6px;font-size:11px;color:var(--muted);">Avg completion: 55%</div>
+        </div>
+        <button class="btn-outline btn-sm">Edit</button>
+      </div>
+      <button class="btn-gold" onclick="showNewModule()">+ Create New Module</button>
+    </div>
+
+    <div id="tab-students" class="tab-panel">
+      <div class="student-row">
+        <div class="student-avatar" style="background:linear-gradient(135deg,#C9A84C,#8B6914);">KJ</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;color:var(--white);">Kendra Johnson</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">3/5 modules complete · Last active: today</div>
+          <div class="progress-track" style="margin-top:6px;"><div class="progress-fill" style="width:60%"></div></div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--gold);">87%</div>
+      </div>
+      <div class="student-row">
+        <div class="student-avatar" style="background:linear-gradient(135deg,#4CAF7D,#1a6645);">ML</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;color:var(--white);">Marcus Lee</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">5/5 modules complete · Last active: yesterday</div>
+          <div class="progress-track" style="margin-top:6px;"><div class="progress-fill" style="width:100%"></div></div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--success);">94%</div>
+      </div>
+      <div class="student-row">
+        <div class="student-avatar" style="background:linear-gradient(135deg,#5AABF0,#1a5a8a);">PR</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;color:var(--white);">Priya Ramesh</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">2/5 modules complete · Last active: 3 days ago</div>
+          <div class="progress-track" style="margin-top:6px;"><div class="progress-fill" style="width:40%"></div></div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--muted);">72%</div>
+      </div>
+      <div class="student-row">
+        <div class="student-avatar" style="background:linear-gradient(135deg,#C47FDD,#6a2e8a);">AT</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;color:var(--white);">Aaliyah Thomas</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">1/5 modules complete · Last active: 1 week ago</div>
+          <div class="progress-track" style="margin-top:6px;"><div class="progress-fill" style="width:20%"></div></div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--error);">61%</div>
+      </div>
+    </div>
+
+    <div style="margin-top:8px;padding-bottom:24px;">
+      <button class="btn-outline" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COMPLETION ============ -->
+<div id="completion" class="screen">
+  <div class="nav">
+    <div class="nav-logo">JYL ☘</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;gap:16px;">
+    <div class="complete-icon">✓</div>
+    <div class="complete-title">Module Complete!</div>
+    <div class="complete-sub">You've finished this module. Great work — keep building those skills.</div>
+    <div style="display:flex;gap:16px;width:100%;max-width:320px;">
+      <div class="stat-box" style="flex:1;">
+        <div class="stat-num" id="final-score">4/5</div>
+        <div class="stat-label">Score</div>
+      </div>
+      <div class="stat-box" style="flex:1;">
+        <div class="stat-num">80%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+    <div style="width:100%;max-width:320px;margin-top:8px;display:flex;flex-direction:column;gap:10px;">
+      <button class="btn-gold" onclick="showScreen('student-dash')">Back to Dashboard</button>
+      <button class="btn-outline" onclick="showScreen('quiz')">Retake Quiz</button>
+    </div>
+    <div style="margin-top:20px;font-size:12px;color:var(--muted);font-style:italic;">
+      "Knowledge Today. Impact Forever." — JYL Medical Services
+    </div>
+  </div>
+</div>
+
+<script>
+let currentRole = 'student';
+
+const flashcards = [
+  { front:'Antecubital Fossa', back:'The inner elbow region — the preferred venipuncture site containing the median cubital, basilic, and cephalic veins.' },
+  { front:'Hemoconcentration', back:'An increase in blood cell concentration relative to plasma, often caused by prolonged tourniquet use. Can falsely elevate results.' },
+  { front:'Order of Draw', back:'The correct sequence for filling blood collection tubes to prevent cross-contamination: Yellow → Light Blue → Red → Green → Lavender → Gray.' },
+  { front:'Gauge', back:'The measure of needle diameter. Higher gauge = thinner needle. 21–23 gauge is standard for most adult venipuncture.' },
+  { front:'EDTA', back:'Ethylenediaminetetraacetic acid — the anticoagulant additive in lavender-top tubes used for CBC and blood bank specimens.' },
+  { front:'Tourniquet Time Limit', back:'A tourniquet should never be left on longer than 60 seconds. Prolonged application causes hemoconcentration and patient discomfort.' },
+  { front:'Bevel Up', back:'The correct needle orientation for venipuncture — the opening faces upward to allow smooth blood flow and minimize vessel trauma.' }
+];
+
+const quizData = [
+  { q:'Which vein is most commonly used for venipuncture in adults?', opts:['Basilic vein','Median cubital vein','Cephalic vein','Femoral vein'], correct:1, exp:'The median cubital vein sits in the antecubital fossa and is the largest, most stable, and least painful option — the go-to for routine draws.' },
+  { q:'What does a lavender-top tube contain?', opts:['Sodium citrate','Lithium heparin','EDTA (K2)','Clot activator'], correct:2, exp:'Lavender/purple tubes contain EDTA, which chelates calcium to prevent clotting. Used for CBC and most hematology studies.' },
+  { q:'What is the maximum time a tourniquet should remain applied?', opts:['30 seconds','60 seconds','2 minutes','5 minutes'], correct:1, exp:'After 60 seconds, hemoconcentration occurs and results can be falsely elevated. Release, wait 2 minutes, then reapply if needed.' },
+  { q:'An AV fistula arm should be used for venipuncture when...', opts:['No other access is available','The patient requests it','Never — always avoid the fistula arm','Only for glucose draws'], correct:2, exp:'The AV fistula arm must always be avoided for venipuncture. Damage or clotting of the fistula can be life-threatening for dialysis patients.' },
+  { q:'Which tube is drawn first in the Order of Draw?', opts:['EDTA (lavender)','Sodium fluoride (gray)','Blood culture (yellow)','Sodium citrate (light blue)'], correct:2, exp:'Blood cultures (yellow/SPS) are drawn first to minimize contamination. Light blue (coagulation) follows, then the rest of the sequence.' }
+];
+
+const walkSteps = [
+  { num:1, title:'Verify Patient Identity', body:'Ask the patient to state their full name and date of birth. Cross-reference against the requisition order. Never rely solely on room number or wristband without verbal confirmation.', tip:'Always use two patient identifiers per Joint Commission standards — name AND date of birth are the gold standard pair.' },
+  { num:2, title:'Review the Requisition', body:'Confirm the tests ordered, tube types required, and any special handling instructions (fasting, chilled specimen, timed draw). Check for allergy alerts.', tip:'If the order says "STAT," communicate that to the lab before you leave the patient room. Time is literally the test.' },
+  { num:3, title:'Gather Supplies', body:'Assemble the correct tubes in Order of Draw sequence, appropriate gauge needle, tourniquet, gloves, alcohol prep pads, gauze, bandage, and labels.', tip:'Pre-label your tubes before the draw — never label from memory after leaving the patient.' },
+  { num:4, title:'Apply Tourniquet & Select Vein', body:'Apply the tourniquet 3–4 inches above the intended site. Ask the patient to make a fist. Palpate for the median cubital vein — feel for a firm, bouncy vessel.', tip:'If you can\'t feel the vein, don\'t guess. Warm the site for 3–5 minutes to dilate the vessel before attempting.' },
+  { num:5, title:'Cleanse the Site', body:'Clean with 70% isopropyl alcohol in a concentric circle (inside out). Allow to air dry completely — at least 30 seconds. Do not blow on or fan the site.', tip:'Wet alcohol causes hemolysis and stinging. If it hasn\'t dried, your specimen and your patient both suffer.' },
+  { num:6, title:'Perform the Puncture', body:'With bevel up at a 15–30° angle, enter the skin smoothly. Anchor the vein with your thumb below the site. Advance gently until flash is seen, then push the first tube onto the needle holder.', tip:'If you miss, redirect slightly — do not fish around blindly. Two attempts max before calling for backup.' },
+  { num:7, title:'Post-Draw & Label', body:'Release tourniquet before withdrawing needle. Apply gentle pressure with gauze immediately. Mix anticoagulant tubes 8–10 times by inversion. Label at bedside before leaving.', tip:'Labeling away from the patient is one of the most common specimen rejection reasons. Label there, label now.' }
+];
+
+const scenarioOpts = [
+  { text:'Draw from the right arm near the AV fistula since it has the best access', correct:false, outcome:'Incorrect. Drawing from an AV fistula arm risks clotting or damaging the fistula, which could be fatal for a dialysis patient. This arm must never be used for venipuncture.' },
+  { text:'Attempt the antecubital on the left arm with a butterfly needle', correct:false, outcome:'Not ideal. The antecubital on a chronic dialysis patient with visible scarring and rolling veins is likely to fail. A butterfly is the right tool — but the site choice needs more consideration first.' },
+  { text:'Explain the situation to the patient, warm both hands, and try the dorsal hand veins with a butterfly needle', correct:true, outcome:'Excellent clinical decision. Hand veins are often viable when antecubital sites are compromised. Warming improves dilation, communication reduces patient anxiety, and a butterfly allows better angle control on small veins.' },
+  { text:'Request the nurse place a PIV and use that for the draw', correct:false, outcome:'This may be appropriate in some settings, but attempting an alternative site first is the correct phlebotomy-scope response. Escalate only after your best clinical options are exhausted.' }
+];
+
+let fcIndex = 0;
+let fcFlipped = false;
+let quizIndex = 0;
+let quizScore = 0;
+let walkIndex = 0;
+
+function setRole(role, btn) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function doLogin() {
+  if (currentRole === 'instructor') {
+    showScreen('instructor-dash');
+  } else {
+    showScreen('student-dash');
+  }
+}
+
+function doLogout() { showScreen('login'); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'flashcard') initFlashcard();
+  if (id === 'quiz') initQuiz();
+  if (id === 'walkthrough') initWalk();
+  if (id === 'scenario') initScenario();
+  window.scrollTo(0,0);
+}
+
+function initFlashcard() {
+  fcIndex = 0; fcFlipped = false;
+  renderFC();
+}
+
+function renderFC() {
+  const card = flashcards[fcIndex];
+  const pct = Math.round(((fcIndex+1)/flashcards.length)*100);
+  document.getElementById('fc-side').textContent = fcFlipped ? 'BACK' : 'FRONT — TAP TO FLIP';
+  document.getElementById('fc-text').textContent = fcFlipped ? card.back : card.front;
+  document.getElementById('fc-sub').textContent = '';
+  document.getElementById('fc-counter').textContent = (fcIndex+1)+' / '+flashcards.length;
+  document.getElementById('fc-num').textContent = 'Card '+(fcIndex+1)+' of '+flashcards.length;
+  document.getElementById('fc-progress').style.width = pct+'%';
+  document.getElementById('flip-hint').textContent = fcFlipped ? '👆 Tap to see front' : '👆 Tap card to flip';
+  document.getElementById('flashcard-card').style.borderColor = fcFlipped ? 'rgba(201,168,76,0.8)' : 'rgba(201,168,76,0.25)';
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  renderFC();
+}
+
+function fcNext() {
+  if (fcIndex < flashcards.length-1) { fcIndex++; fcFlipped=false; renderFC(); }
+  else { showScreen('completion'); }
+}
+
+function fcPrev() {
+  if (fcIndex > 0) { fcIndex--; fcFlipped=false; renderFC(); }
+}
+
+function initQuiz() {
+  quizIndex = 0; quizScore = 0;
+  document.getElementById('quiz-score-display').textContent = 'Score: 0';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizData[quizIndex];
+  const pct = Math.round((quizIndex/quizData.length)*100);
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-num').textContent = 'Question '+(quizIndex+1)+' of '+quizData.length;
+  document.getElementById('quiz-progress').style.width = pct+'%';
+  document.getElementById('quiz-explanation').style.display = 'none';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="option-letter">'+letters[i]+'</span>'+opt;
+    btn.onclick = () => selectAnswer(i, q.correct, q.exp);
+    opts.appendChild(btn);
+  });
+}
+
+function selectAnswer(chosen, correct, exp) {
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === correct) b.classList.add('correct');
+    if (i === chosen && chosen !== correct) b.classList.add('wrong');
+  });
+  if (chosen === correct) { quizScore++; }
+  document.getElementById('quiz-score-display').textContent = 'Score: '+quizScore;
+  const expBox = document.getElementById('quiz-explanation');
+  expBox.textContent = exp;
+  expBox.style.display = 'block';
+  document.getElementById('quiz-next-btn').style.display = 'block';
+  document.getElementById('quiz-next-btn').textContent = quizIndex < quizData.length-1 ? 'Next Question ›' : 'See Results ›';
+}
+
+function nextQuestion() {
+  if (quizIndex < quizData.length-1) { quizIndex++; renderQuiz(); }
+  else {
+    document.getElementById('final-score').textContent = quizScore+'/'+quizData.length;
+    showScreen('completion');
+  }
+}
+
+function initWalk() {
+  walkIndex = 0;
+  renderWalk();
+}
+
+function renderWalk() {
+  const s = walkSteps[walkIndex];
+  const pct = Math.round(((walkIndex+1)/walkSteps.length)*100);
+  document.getElementById('walk-num').textContent = s.num;
+  document.getElementById('walk-title').textContent = s.title;
+  document.getElementById('walk-body').textContent = s.body;
+  document.getElementById('walk-tip').textContent = s.tip;
+  document.getElementById('walk-counter').textContent = 'Step '+(walkIndex+1)+'/'+walkSteps.length;
+  document.getElementById('walk-progress').style.width = pct+'%';
+}
+
+function walkNext() {
+  if (walkIndex < walkSteps.length-1) { walkIndex++; renderWalk(); }
+  else { showScreen('completion'); }
+}
+
+function walkPrev() {
+  if (walkIndex > 0) { walkIndex--; renderWalk(); }
+  else { showScreen('student-dash'); }
+}
+
+function initScenario() {
+  const container = document.getElementById('scenario-options');
+  container.innerHTML = '';
+  document.getElementById('scenario-outcome').style.display = 'none';
+  document.getElementById('scenario-next').style.display = 'none';
+  scenarioOpts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="option-letter">'+'ABCD'[i]+'</span>'+opt.text;
+    btn.onclick = () => selectScenario(i, opt, btn);
+    container.appendChild(btn);
+  });
+}
+
+function selectScenario(i, opt, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+  const outcome = document.getElementById('scenario-outcome');
+  outcome.className = 'outcome-box '+(opt.correct ? 'correct' : 'wrong');
+  outcome.textContent = (opt.correct ? '✓ ' : '✗ ')+opt.outcome;
+  outcome.style.display = 'block';
+  btn.classList.add(opt.correct ? 'correct' : 'wrong');
+  document.getElementById('scenario-next').style.display = 'block';
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showNewModule() {
+  alert('Module Builder — coming in the full build! This will let you add flashcards, quiz questions, walkthrough steps, and scenarios.');
+}
+</script>
+</body>
+</html>
